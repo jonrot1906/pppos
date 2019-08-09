@@ -693,7 +693,7 @@ static void mgos_pppos_dispatch_once(struct mgos_pppos_data *pd) {
         LOG(LL_INFO, (" GSM Network serach"));
         add_cmd(pd, mgos_pppos_creg_cb, "AT+CREG?");
       } else {
-        LOG(LL_INFO, ("Cat-M1 Nework search));
+        LOG(LL_INFO, ("Cat-M1 Nework search"));
         add_cmd(pd, mgos_pppos_cgreg_cb, "AT+CGREG?");
       }
       add_cmd(pd, mgos_pppos_at_cb, "AT+COPS=3,0");
