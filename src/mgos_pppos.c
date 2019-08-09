@@ -690,8 +690,10 @@ static void mgos_pppos_dispatch_once(struct mgos_pppos_data *pd) {
       add_cmd(pd, NULL, "AT+CFUN=1"); /* Full functionality */
       /* Check whcih network is configured and user appropriate comand */
       if(!mgos_sys_config_get_pppos_m1()){
+        LOG(LL_INFO, (" GSM Network serach"));
         add_cmd(pd, mgos_pppos_creg_cb, "AT+CREG?");
       } else {
+        LOG(LL_INFO, ("Cat-M1 Nework search));
         add_cmd(pd, mgos_pppos_cgreg_cb, "AT+CGREG?");
       }
       add_cmd(pd, mgos_pppos_at_cb, "AT+COPS=3,0");
