@@ -387,7 +387,7 @@ static bool mgos_pppos_creg_cb(void *cb_arg, bool ok, struct mg_str data) {
   if (ok) {
     LOG(LL_ERROR, ("Connected to mobile network (%s)", sts));
   } else {
-    LOG(LL_ERROR, ("Not connected to mobile network, status %d (%s)", st, sts));
+    LOG(LL_ERROR, ("Not connected to GSM mobile network, status %d (%s)", st, sts));
     pd->cmd_idx--;
     pd->delay = mgos_uptime() + 1.0;
     ok = true;
@@ -438,7 +438,7 @@ static bool mgos_pppos_cgreg_cb(void *cb_arg, bool ok, struct mg_str data) {
   if (ok) {
     LOG(LL_ERROR, ("Connected to mobile network (%s)", sts));
   } else {
-    LOG(LL_ERROR, ("Not connected to mobile network, status %d (%s)", st, sts));
+    LOG(LL_ERROR, ("Not connected to Cat-M1 mobile network, status %d (%s)", st, sts));
     pd->cmd_idx--;
     pd->delay = mgos_uptime() + 1.0;
     ok = true;
