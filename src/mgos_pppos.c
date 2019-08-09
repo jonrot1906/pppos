@@ -387,7 +387,7 @@ static bool mgos_pppos_creg_cb(void *cb_arg, bool ok, struct mg_str data) {
   if (ok) {
     LOG(LL_ERROR, ("Connected to mobile network (%s)", sts));
   } else {
-    LOG(LL_ERROR, ("Not connected to GSM mobile network, status %d (%s)", st, sts));
+    LOG(LL_INFO, ("Not connected to GSM mobile network, status %d (%s)", st, sts));
     pd->cmd_idx--;
     pd->delay = mgos_uptime() + 1.0;
     ok = true;
@@ -438,7 +438,7 @@ static bool mgos_pppos_cgreg_cb(void *cb_arg, bool ok, struct mg_str data) {
   if (ok) {
     LOG(LL_ERROR, ("Connected to mobile network (%s)", sts));
   } else {
-    LOG(LL_ERROR, ("Not connected to Cat-M1 mobile network, status %d (%s)", st, sts));
+    LOG(LL_INFO, ("Not connected to Cat-M1 mobile network, status %d (%s)", st, sts));
     pd->cmd_idx--;
     pd->delay = mgos_uptime() + 1.0;
     ok = true;
@@ -699,7 +699,14 @@ static void mgos_pppos_dispatch_once(struct mgos_pppos_data *pd) {
       add_cmd(pd, mgos_pppos_at_cb, "AT+COPS=3,0");
       add_cmd(pd, mgos_pppos_cops_cb, "AT+COPS?");
       add_cmd(pd, mgos_pppos_csq_cb, "AT+CSQ");
-      add_cmd(pd, NULL, "AT+CREG=0"); /* Disable unsolicited reports */
+      
+      if(!mgos_sys_config_get_pppos_m1()){
+        LOG(LL_INFO, (" GSM Network serach"));
+        add_cmd(pd, NULL, "AT+CREG=0"); /* Disable unsolicited reports */
+      } else {
+        LOG(LL_INFO, ("Cat-M1 Nework search"));
+        add_cmd(pd, NULL, "AT+CGREG=0"); /* Disable unsolicited reports */
+      }
       add_cmd(pd, NULL, "AT+CGDCONT=1,\"IP\",\"%s\"", pd->cfg->apn);
       add_cmd(pd, mgos_pppos_atd_cb, "ATDT*99***1#");
       mgos_pppos_set_state(pd, PPPOS_CMD);
