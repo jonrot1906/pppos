@@ -705,7 +705,7 @@ static void mgos_pppos_dispatch_once(struct mgos_pppos_data *pd) {
         add_cmd(pd, NULL, "AT+CREG=0"); /* Disable unsolicited reports */
       } else {
         LOG(LL_INFO, ("Cat-M1 Nework search"));
-        add_cmd(pd, NULL, "AT+CGREG=0"); /* Disable unsolicited reports */
+        add_cmd(pd, NULL, "AT+CGREG=0"); 
       }
       add_cmd(pd, NULL, "AT+CGDCONT=1,\"IP\",\"%s\"", pd->cfg->apn);
       add_cmd(pd, mgos_pppos_atd_cb, "ATDT*99***1#");
