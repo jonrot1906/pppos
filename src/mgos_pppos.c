@@ -396,6 +396,7 @@ static bool mgos_pppos_creg_cb(void *cb_arg, bool ok, struct mg_str data) {
   return ok;
 }
 
+// CCTRONIC Modification 1
 static bool mgos_pppos_cgreg_cb(void *cb_arg, bool ok, struct mg_str data) {
   struct mgos_pppos_data *pd = (struct mgos_pppos_data *) cb_arg;
   if (!ok) {
@@ -687,7 +688,12 @@ static void mgos_pppos_dispatch_once(struct mgos_pppos_data *pd) {
       add_cmd(pd, mgos_pppos_ccid_cb, "AT+CCID");
       add_cmd(pd, mgos_pppos_cpin_cb, "AT+CPIN?");
       add_cmd(pd, NULL, "AT+CFUN=1"); /* Full functionality */
-      add_cmd(pd, mgos_pppos_creg_cb, "AT+CREG?");
+      /* Check whcih network is configured and user appropriate comand */
+      if(!mgos_sys_config_get_pppos_m1()){
+        add_cmd(pd, mgos_pppos_creg_cb, "AT+CREG?");
+      } else {
+        add_cmd(pd, mgos_pppos_cgreg_cb, "AT+CGREG?");
+      }
       add_cmd(pd, mgos_pppos_at_cb, "AT+COPS=3,0");
       add_cmd(pd, mgos_pppos_cops_cb, "AT+COPS?");
       add_cmd(pd, mgos_pppos_csq_cb, "AT+CSQ");
