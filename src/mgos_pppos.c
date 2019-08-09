@@ -396,6 +396,56 @@ static bool mgos_pppos_creg_cb(void *cb_arg, bool ok, struct mg_str data) {
   return ok;
 }
 
+static bool mgos_pppos_cgreg_cb(void *cb_arg, bool ok, struct mg_str data) {
+  struct mgos_pppos_data *pd = (struct mgos_pppos_data *) cb_arg;
+  if (!ok) {
+    LOG(LL_WARN, ("%s response to AT+CGREG, proceeding anyway", "Error"));
+    return true;
+  }
+  int n, st;
+  if (sscanf(data.p, "+CGREG: %d,%d", &n, &st) != 2) {
+    LOG(LL_WARN, ("%s response to AT+CGREG, proceeding anyway", "Unknown"));
+    return true;
+  }
+  ok = false;
+  const char *sts = NULL;
+  switch (st) {
+    case 0:
+      sts = "idle";
+      break;
+    case 1:
+      sts = "home";
+      ok = true;
+      break;
+    case 2:
+      sts = "searching";
+      break;
+    case 3:
+      sts = "denied";
+      break;
+    case 4:
+      sts = "unknown";
+      break;
+    case 5:
+      ok = true;
+      sts = "roaming";
+      break;
+    default:
+      sts = "???";
+      break;
+  }
+  if (ok) {
+    LOG(LL_ERROR, ("Connected to mobile network (%s)", sts));
+  } else {
+    LOG(LL_ERROR, ("Not connected to mobile network, status %d (%s)", st, sts));
+    pd->cmd_idx--;
+    pd->delay = mgos_uptime() + 1.0;
+    ok = true;
+  }
+  (void) sts;
+  return ok;
+}
+
 static bool mgos_pppos_cops_cb(void *cb_arg, bool ok, struct mg_str data) {
   if (!ok) return true;
   const char *q1 = mg_strchr(data, '"');
