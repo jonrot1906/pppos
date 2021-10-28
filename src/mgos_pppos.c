@@ -690,11 +690,14 @@ static void mgos_pppos_dispatch_once(struct mgos_pppos_data *pd) {
       add_cmd(pd, NULL, "AT+CFUN=1"); /* Full functionality */
       /* Check whcih network is configured and user appropriate comand */
       if(!mgos_sys_config_get_pppos_m1()){
-        LOG(LL_INFO, (" GSM Network search"));
-        add_cmd(pd, NULL, "AT+CNMP=13");
+        LOG(LL_INFO, (" GSM/NB-IoT Network search"));
+        LOG(LL_INFO, (" Settings to Auto"));
+        add_cmd(pd, NULL, "AT+CNMP=51");
+        add_cmd(pd, NULL, "AT+CMNB=3");
         add_cmd(pd, mgos_pppos_creg_cb, "AT+CREG?");
       } else {
         LOG(LL_INFO, ("Cat-M1 Network search"));
+        LOG(LL_INFO, (" Settings to NB-IoT only"));
         add_cmd(pd, NULL, "AT+CNMP=38");
         add_cmd(pd, NULL, "AT+CMNB=3");
         add_cmd(pd, mgos_pppos_cgreg_cb, "AT+CGREG?");
