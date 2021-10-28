@@ -690,10 +690,13 @@ static void mgos_pppos_dispatch_once(struct mgos_pppos_data *pd) {
       add_cmd(pd, NULL, "AT+CFUN=1"); /* Full functionality */
       /* Check whcih network is configured and user appropriate comand */
       if(!mgos_sys_config_get_pppos_m1()){
-        LOG(LL_INFO, (" GSM Network serach"));
+        LOG(LL_INFO, (" GSM Network search"));
+        add_cmd(pd, mgos_pppos_cnmp_cb, "AT+CNMP=13");
         add_cmd(pd, mgos_pppos_creg_cb, "AT+CREG?");
       } else {
-        LOG(LL_INFO, ("Cat-M1 Nework search"));
+        LOG(LL_INFO, ("Cat-M1 Network search"));
+        add_cmd(pd, mgos_pppos_cnmp_cb, "AT+CNMP=38");
+        add_cmd(pd, mgos_pppos_cmnb_cb, "AT+CMNB=3");
         add_cmd(pd, mgos_pppos_cgreg_cb, "AT+CGREG?");
       }
       add_cmd(pd, mgos_pppos_at_cb, "AT+COPS=3,0");
@@ -701,11 +704,12 @@ static void mgos_pppos_dispatch_once(struct mgos_pppos_data *pd) {
       add_cmd(pd, mgos_pppos_csq_cb, "AT+CSQ");
       
       if(!mgos_sys_config_get_pppos_m1()){
-        LOG(LL_INFO, (" GSM Network serach"));
+        LOG(LL_INFO, (" GSM Network search"));
         add_cmd(pd, NULL, "AT+CREG=0"); /* Disable unsolicited reports */
       } else {
-        LOG(LL_INFO, ("Cat-M1 Nework search"));
-        add_cmd(pd, NULL, "AT+CGREG=0"); 
+        LOG(LL_INFO, ("Cat-M1 Newtork search"));
+        add_cmd(pd, NULL, "AT+CGREG=0");
+        add_cmd(pd, NULL, "AT+CEREG=0"); 
       }
       add_cmd(pd, NULL, "AT+CGDCONT=1,\"IP\",\"%s\"", pd->cfg->apn);
       add_cmd(pd, mgos_pppos_atd_cb, "ATDT*99***1#");
