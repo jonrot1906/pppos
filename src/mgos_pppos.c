@@ -710,7 +710,7 @@ static void mgos_pppos_dispatch_once(struct mgos_pppos_data *pd) {
         LOG(LL_INFO, (" GSM Network search"));
         add_cmd(pd, NULL, "AT+CREG=0"); /* Disable unsolicited reports */
       } else {
-        LOG(LL_INFO, ("Cat-M1 Newtork search"));
+        LOG(LL_INFO, ("Cat-M1 Network search"));
         add_cmd(pd, NULL, "AT+CGREG=0");
         add_cmd(pd, NULL, "AT+CEREG=0"); 
       }
